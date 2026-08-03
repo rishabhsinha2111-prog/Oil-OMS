@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LogoutButton from "@/app/components/LogoutButton";
 
 type Row = {
   id: number;
@@ -43,9 +44,12 @@ export default function PendingPage() {
           <h1 className="text-lg font-medium">Pending sauda</h1>
           <p className="text-sm text-gray-500">Live view across purchase and sales</p>
         </div>
-        <a href="/api/export" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium">
-          Export report
-        </a>
+        <div className="flex items-center gap-3">
+          <a href="/api/export" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium">
+            Export report
+          </a>
+          <LogoutButton />
+        </div>
       </div>
 
       <div className="flex gap-2">
