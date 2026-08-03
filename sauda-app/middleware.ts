@@ -24,6 +24,9 @@ export function middleware(req: NextRequest) {
     if (pathname.startsWith("/purchase") && user.role !== "purchase" && user.role !== "admin") {
       return NextResponse.redirect(new URL(ROLE_HOME[user.role] ?? "/login", req.url));
     }
+    if (pathname.startsWith("/dispatch-upload") && user.role !== "purchase" && user.role !== "admin") {
+      return NextResponse.redirect(new URL(ROLE_HOME[user.role] ?? "/login", req.url));
+    }
     if (pathname.startsWith("/sales") && user.role !== "sales" && user.role !== "admin") {
       return NextResponse.redirect(new URL(ROLE_HOME[user.role] ?? "/login", req.url));
     }
