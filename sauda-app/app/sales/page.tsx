@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LogoutButton from "@/app/components/LogoutButton";
 
 type Party = { id: number; name: string; location: string; status: string };
 type Item = { id: number; name: string; category: string };
@@ -118,9 +119,12 @@ export default function SalesPage() {
 
   return (
     <main className="max-w-2xl mx-auto p-4 space-y-6">
-      <div>
-        <h1 className="text-lg font-medium">Sales sauda</h1>
-        <p className="text-sm text-gray-500">Your bookings only</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-medium">Sales sauda</h1>
+          <p className="text-sm text-gray-500">Your bookings only</p>
+        </div>
+        <LogoutButton />
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
