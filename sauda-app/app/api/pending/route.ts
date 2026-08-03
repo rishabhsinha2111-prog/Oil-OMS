@@ -17,7 +17,7 @@ export async function GET() {
      FROM purchase_sauda ps
      JOIN companies c ON c.id = ps.company_id
      JOIN items i ON i.id = ps.item_id
-     WHERE ps.status IN ('booked','partially_dispatched')
+     WHERE ps.status IN ('open','partially_lifted')
      ORDER BY ps.booking_date DESC`
   );
 
