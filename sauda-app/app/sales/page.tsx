@@ -24,6 +24,7 @@ export default function SalesPage() {
   const [newPartyMode, setNewPartyMode] = useState(false);
   const [newPartyName, setNewPartyName] = useState("");
   const [itemId, setItemId] = useState("");
+  const [category, setCategory] = useState("");
   const [qty, setQty] = useState("");
   const [rate, setRate] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("7 day");
@@ -37,6 +38,9 @@ export default function SalesPage() {
     fetch("/api/items").then((r) => r.json()).then(setItems);
     refreshList();
   }, []);
+
+  const categories = Array.from(new Set(items.map((i) => i.category).filter(Boolean))) as string[];
+  const filteredItems = category ? items.filter((i) => i.category === category) : items;
 
   function refreshList() {
     fetch("/api/sales-sauda").then((r) => r.json()).then(setList);
@@ -156,10 +160,19 @@ export default function SalesPage() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
+            <label className="text-sm text-gray-600">Category</label>
+            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={category} onChange={(e) => { setCategory(e.target.value); setItemId(""); }}>
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="text-sm text-gray-600">Item</label>
             <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={itemId} onChange={(e) => setItemId(e.target.value)}>
               <option value="">Select</option>
-              {items.map((i) => (
+              {filteredItems.map((i) => (
                 <option key={i.id} value={i.id}>{i.name}</option>
               ))}
             </select>
