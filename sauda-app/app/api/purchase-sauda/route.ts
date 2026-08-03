@@ -72,8 +72,8 @@ export async function POST(req: NextRequest) {
 
     const rows = await query(
       `INSERT INTO purchase_sauda
-        (company_id, item_id, qty, rate, payment_terms, location, booking_date, lifting_days, expiry_date, created_by, notes)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        (company_id, item_id, qty, rate, payment_terms, location, booking_date, lifting_days, expiry_date, status, created_by, notes)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'open',$10,$11)
        RETURNING *`,
       [
         company_id, item_id, qty, rate, payment_terms ?? null, location ?? null,
