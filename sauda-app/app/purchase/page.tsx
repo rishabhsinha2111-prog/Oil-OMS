@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LogoutButton from "@/app/components/LogoutButton";
 
 type Company = { id: number; name: string };
 type Item = { id: number; name: string; company_id: number };
@@ -96,9 +97,12 @@ export default function PurchasePage() {
           <h1 className="text-lg font-medium">Purchase sauda</h1>
           <p className="text-sm text-gray-500">Booked against client companies</p>
         </div>
-        <a href="/dispatch-upload" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap">
-          Upload dispatch
-        </a>
+        <div className="flex items-center gap-3">
+          <a href="/dispatch-upload" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap">
+            Upload dispatch
+          </a>
+          <LogoutButton />
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
