@@ -90,6 +90,8 @@ export default function PurchasePage() {
       setRate("");
       setNotes("");
       refreshList();
+    } catch {
+      setError("Could not reach the server — check your connection and try again.");
     } finally {
       setSaving(false);
     }
