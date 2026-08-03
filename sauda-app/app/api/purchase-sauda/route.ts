@@ -8,9 +8,6 @@ export async function GET() {
   const user = getSessionUser();
   if (!user) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
 
-  // Purchase side is Ganesh's own bookings unless you're admin (full visibility).
-  // Each row is one tranche: qty/rate/lifting window are locked at booking time.
-  // dispatched_qty is a cache recomputed from purchase_lifts, never edited directly.
   const rows =
     user.role === "admin"
       ? await query(
@@ -41,39 +38,55 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
 
-  const {
-    company_id, item_id, qty, rate, payment_terms, location,
-    booking_date, lifting_days, notes,
-  } = await req.json();
+  try {
+    const {
+      company_id, item_id, qty, rate, payment_terms, location,
+      booking_date, lifting_days, notes,
+    } = await req.json();
 
-  if (!company_id || !item_id || !qty || !rate) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-  }
+    if (!company_id || !item_id || !qty || !rate) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
 
-  // Guard rail: item must actually belong to the selected company (strict mapping)
-  const check = await query(
-    `SELECT 1 FROM items WHERE id = $1 AND company_id = $2`,
-    [item_id, company_id]
-  );
-  if (check.length === 0) {
+    const check = await query(
+      `SELECT 1 FROM items WHERE id = $1 AND company_id = $2`,
+      [item_id, company_id]
+    );
+    if (check.length === 0) {
+      return NextResponse.json(
+        { error: "Selected item does not belong to the selected company" },
+        { status: 400 }
+      );
+    }
+
+    const days = lifting_days ? Number(lifting_days) : 21;
+
+    // Compute the actual date values in JS rather than inside a parameterized
+    // SQL interval expression - avoids Postgres type-inference issues with
+    // integer/text concatenation through a driver-typed parameter.
+    const bookingDateObj = booking_date ? new Date(booking_date) : new Date();
+    const expiryDateObj = new Date(bookingDateObj);
+    expiryDateObj.setDate(expiryDateObj.getDate() + days);
+
+    const toISODate = (d: Date) => d.toISOString().slice(0, 10);
+
+    const rows = await query(
+      `INSERT INTO purchase_sauda
+        (company_id, item_id, qty, rate, payment_terms, location, booking_date, lifting_days, expiry_date, created_by, notes)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       RETURNING *`,
+      [
+        company_id, item_id, qty, rate, payment_terms ?? null, location ?? null,
+        toISODate(bookingDateObj), days, toISODate(expiryDateObj), user.name, notes ?? null,
+      ]
+    );
+
+    return NextResponse.json(rows[0]);
+  } catch (err: any) {
+    console.error("purchase-sauda POST failed:", err);
     return NextResponse.json(
-      { error: "Selected item does not belong to the selected company" },
-      { status: 400 }
+      { error: err?.message ?? "Unexpected server error while saving purchase sauda" },
+      { status: 500 }
     );
   }
-
-  const days = lifting_days ? Number(lifting_days) : 21;
-
-  // Each booking is a brand new tranche - even if the same item/company already
-  // has open tranches at a different rate. That's expected, not a duplicate.
-  const rows = await query(
-    `INSERT INTO purchase_sauda
-      (company_id, item_id, qty, rate, payment_terms, location, booking_date, lifting_days, expiry_date, created_by, notes)
-     VALUES ($1,$2,$3,$4,$5,$6, COALESCE($7, CURRENT_DATE), $8,
-             COALESCE($7, CURRENT_DATE) + ($8 || ' days')::interval, $9, $10)
-     RETURNING *`,
-    [company_id, item_id, qty, rate, payment_terms ?? null, location ?? null, booking_date ?? null, days, user.name, notes ?? null]
-  );
-
-  return NextResponse.json(rows[0]);
 }
