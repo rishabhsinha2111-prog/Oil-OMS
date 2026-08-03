@@ -8,18 +8,22 @@ export async function GET() {
   const user = getSessionUser();
   if (!user) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
 
-  // Purchase side is Ganesh's own bookings unless you're admin (full visibility)
+  // Purchase side is Ganesh's own bookings unless you're admin (full visibility).
+  // Each row is one tranche: qty/rate/lifting window are locked at booking time.
+  // dispatched_qty is a cache recomputed from purchase_lifts, never edited directly.
   const rows =
     user.role === "admin"
       ? await query(
-          `SELECT ps.*, c.name AS company_name, i.name AS item_name
+          `SELECT ps.*, c.name AS company_name, i.name AS item_name,
+                  (ps.qty - ps.dispatched_qty) AS remaining_qty
            FROM purchase_sauda ps
            JOIN companies c ON c.id = ps.company_id
            JOIN items i ON i.id = ps.item_id
            ORDER BY ps.created_at DESC`
         )
       : await query(
-          `SELECT ps.*, c.name AS company_name, i.name AS item_name
+          `SELECT ps.*, c.name AS company_name, i.name AS item_name,
+                  (ps.qty - ps.dispatched_qty) AS remaining_qty
            FROM purchase_sauda ps
            JOIN companies c ON c.id = ps.company_id
            JOIN items i ON i.id = ps.item_id
@@ -37,8 +41,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
 
-  const { company_id, item_id, qty, rate, payment_terms, location, booking_date, notes } =
-    await req.json();
+  const {
+    company_id, item_id, qty, rate, payment_terms, location,
+    booking_date, lifting_days, notes,
+  } = await req.json();
 
   if (!company_id || !item_id || !qty || !rate) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -56,12 +62,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const days = lifting_days ? Number(lifting_days) : 21;
+
+  // Each booking is a brand new tranche - even if the same item/company already
+  // has open tranches at a different rate. That's expected, not a duplicate.
   const rows = await query(
     `INSERT INTO purchase_sauda
-      (company_id, item_id, qty, rate, payment_terms, location, booking_date, created_by, notes)
-     VALUES ($1,$2,$3,$4,$5,$6, COALESCE($7, CURRENT_DATE), $8, $9)
+      (company_id, item_id, qty, rate, payment_terms, location, booking_date, lifting_days, expiry_date, created_by, notes)
+     VALUES ($1,$2,$3,$4,$5,$6, COALESCE($7, CURRENT_DATE), $8,
+             COALESCE($7, CURRENT_DATE) + ($8 || ' days')::interval, $9, $10)
      RETURNING *`,
-    [company_id, item_id, qty, rate, payment_terms ?? null, location ?? null, booking_date ?? null, user.name, notes ?? null]
+    [company_id, item_id, qty, rate, payment_terms ?? null, location ?? null, booking_date ?? null, days, user.name, notes ?? null]
   );
 
   return NextResponse.json(rows[0]);
