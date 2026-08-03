@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import LogoutButton from "@/app/components/LogoutButton";
 
 type Company = { id: number; name: string };
-type Item = { id: number; name: string; company_id: number };
+type Item = { id: number; name: string; company_id: number; category: string | null };
 type Sauda = {
   id: number;
   company_name: string;
@@ -25,6 +25,7 @@ export default function PurchasePage() {
   const [list, setList] = useState<Sauda[]>([]);
 
   const [companyId, setCompanyId] = useState("");
+  const [category, setCategory] = useState("");
   const [itemId, setItemId] = useState("");
   const [qty, setQty] = useState("");
   const [rate, setRate] = useState("");
@@ -47,7 +48,11 @@ export default function PurchasePage() {
     }
     fetch(`/api/items?company_id=${companyId}`).then((r) => r.json()).then(setItems);
     setItemId("");
+    setCategory("");
   }, [companyId]);
+
+  const categories = Array.from(new Set(items.map((i) => i.category).filter(Boolean))) as string[];
+  const filteredItems = category ? items.filter((i) => i.category === category) : items;
 
   function refreshList() {
     fetch("/api/purchase-sauda").then((r) => r.json()).then(setList);
@@ -117,10 +122,19 @@ export default function PurchasePage() {
             </select>
           </div>
           <div>
+            <label className="text-sm text-gray-600">Category</label>
+            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={category} onChange={(e) => { setCategory(e.target.value); setItemId(""); }} disabled={!companyId}>
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="text-sm text-gray-600">Item</label>
             <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={itemId} onChange={(e) => setItemId(e.target.value)} disabled={!companyId}>
               <option value="">Select</option>
-              {items.map((i) => (
+              {filteredItems.map((i) => (
                 <option key={i.id} value={i.id}>{i.name}</option>
               ))}
             </select>
