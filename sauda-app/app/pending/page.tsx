@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LogoutButton from "@/app/components/LogoutButton";
+import AppHeader from "@/app/components/AppHeader";
 
 type Row = {
   id: number;
@@ -38,18 +38,17 @@ export default function PendingPage() {
   ];
 
   return (
-    <main className="max-w-4xl mx-auto p-4 space-y-4">
+    <div className="min-h-screen bg-slate-100">
+      <AppHeader subtitle="Pending sauda" />
+      <main className="max-w-4xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-medium">Pending sauda</h1>
-          <p className="text-sm text-gray-500">Live view across purchase and sales</p>
+          <h1 className="text-lg font-semibold text-slate-900">Pending sauda</h1>
+          <p className="text-sm text-slate-500">Live view across purchase and sales</p>
         </div>
-        <div className="flex items-center gap-3">
-          <a href="/api/export" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium">
-            Export report
-          </a>
-          <LogoutButton />
-        </div>
+        <a href="/api/export" className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+          Export report
+        </a>
       </div>
 
       <div className="flex gap-2">
@@ -92,6 +91,7 @@ export default function PendingPage() {
           </tbody>
         </table>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
