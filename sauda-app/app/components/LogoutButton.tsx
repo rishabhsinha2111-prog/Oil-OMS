@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function LogoutButton() {
+export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
 
   async function handleLogout() {
@@ -14,7 +14,7 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="text-sm text-gray-500 underline underline-offset-2"
+      className={className ?? "text-sm text-gray-500 underline underline-offset-2"}
     >
       Log out
     </button>
