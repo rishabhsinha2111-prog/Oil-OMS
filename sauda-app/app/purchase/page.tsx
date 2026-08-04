@@ -161,7 +161,12 @@ export default function PurchasePage() {
           </div>
           <div>
             <label className="text-sm text-gray-600">Location</label>
-            <input className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Jejuri / Mumbai / Nagpur" />
+            <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={location} onChange={(e) => setLocation(e.target.value)}>
+              <option value="">Select</option>
+              {["Jejuri", "Mumbai", "Nagpur", "Wadi", "Dadar", "Bhiwandi", "Ulhasnagar"].map((loc) => (
+                <option key={loc} value={loc}>{loc}</option>
+              ))}
+            </select>
           </div>
         </div>
         <div>
