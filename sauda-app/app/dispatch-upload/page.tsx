@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AppHeader from "@/app/components/AppHeader";
 
 type Company = { id: number; name: string };
 type Item = { id: number; name: string };
@@ -79,10 +80,12 @@ export default function DispatchUploadPage() {
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-4 space-y-6">
+    <div className="min-h-screen bg-slate-100">
+      <AppHeader subtitle="Daily dispatch upload" />
+      <main className="max-w-2xl mx-auto p-4 space-y-6">
       <div>
-        <h1 className="text-lg font-medium">Daily dispatch upload</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-lg font-semibold text-slate-900">Daily dispatch upload</h1>
+        <p className="text-sm text-slate-500">
           Upload the dispatch Excel from today&apos;s mail. Each row is matched to the tranche booked
           at that exact product + rate — not just the oldest open one.
         </p>
@@ -91,7 +94,7 @@ export default function DispatchUploadPage() {
       <form onSubmit={handleUpload} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
         <div>
           <label className="text-sm text-gray-600">Client company</label>
-          <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
+          <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
             <option value="">Select</option>
             {companies.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -103,14 +106,14 @@ export default function DispatchUploadPage() {
           <input
             type="file"
             accept=".xlsx,.xls"
-            className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1"
+            className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <button disabled={uploading} className="w-full bg-gray-900 text-white rounded-md py-2 font-medium disabled:opacity-50">
+        <button disabled={uploading} className="w-full bg-[#0f2942] text-white rounded-lg py-2.5 font-medium hover:bg-[#16385a] transition-colors disabled:opacity-50">
           {uploading ? "Processing..." : "Upload and reconcile"}
         </button>
       </form>
@@ -134,7 +137,7 @@ export default function DispatchUploadPage() {
                   ) : (
                     <>
                       <select
-                        className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+                        className="bg-white text-slate-900 border border-slate-300 rounded-lg px-2 py-1 text-sm"
                         value={aliasChoice[product] ?? ""}
                         onChange={(e) => setAliasChoice((prev) => ({ ...prev, [product]: e.target.value }))}
                       >
@@ -180,6 +183,7 @@ export default function DispatchUploadPage() {
           )}
         </div>
       )}
-    </main>
+      </main>
+    </div>
   );
 }
