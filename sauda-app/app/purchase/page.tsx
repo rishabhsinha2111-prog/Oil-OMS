@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LogoutButton from "@/app/components/LogoutButton";
+import AppHeader from "@/app/components/AppHeader";
 
 type Company = { id: number; name: string };
 type Item = { id: number; name: string; company_id: number; category: string | null };
@@ -98,25 +98,24 @@ export default function PurchasePage() {
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-4 space-y-6">
+    <div className="min-h-screen bg-slate-100">
+      <AppHeader subtitle="Purchase sauda" />
+      <main className="max-w-2xl mx-auto p-4 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-medium">Purchase sauda</h1>
-          <p className="text-sm text-gray-500">Booked against client companies</p>
+          <h1 className="text-lg font-semibold text-slate-900">Purchase sauda</h1>
+          <p className="text-sm text-slate-500">Booked against client companies</p>
         </div>
-        <div className="flex items-center gap-3">
-          <a href="/dispatch-upload" className="border border-gray-300 rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap">
-            Upload dispatch
-          </a>
-          <LogoutButton />
-        </div>
+        <a href="/dispatch-upload" className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-700 hover:bg-slate-50 transition-colors">
+          Upload dispatch
+        </a>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-sm text-gray-600">Client company</label>
-            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
+            <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
               <option value="">Select</option>
               {companies.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -125,7 +124,7 @@ export default function PurchasePage() {
           </div>
           <div>
             <label className="text-sm text-gray-600">Category</label>
-            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={category} onChange={(e) => { setCategory(e.target.value); setItemId(""); }} disabled={!companyId}>
+            <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={category} onChange={(e) => { setCategory(e.target.value); setItemId(""); }} disabled={!companyId}>
               <option value="">All categories</option>
               {categories.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -134,7 +133,7 @@ export default function PurchasePage() {
           </div>
           <div>
             <label className="text-sm text-gray-600">Item</label>
-            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={itemId} onChange={(e) => setItemId(e.target.value)} disabled={!companyId}>
+            <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={itemId} onChange={(e) => setItemId(e.target.value)} disabled={!companyId}>
               <option value="">Select</option>
               {filteredItems.map((i) => (
                 <option key={i.id} value={i.id}>{i.name}</option>
@@ -143,36 +142,36 @@ export default function PurchasePage() {
           </div>
           <div>
             <label className="text-sm text-gray-600">Quantity</label>
-            <input type="number" className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={qty} onChange={(e) => setQty(e.target.value)} />
+            <input type="number" className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={qty} onChange={(e) => setQty(e.target.value)} />
           </div>
           <div>
             <label className="text-sm text-gray-600">Rate</label>
-            <input type="number" className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={rate} onChange={(e) => setRate(e.target.value)} />
+            <input type="number" className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={rate} onChange={(e) => setRate(e.target.value)} />
           </div>
           <div>
             <label className="text-sm text-gray-600">Payment terms</label>
-            <input className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
+            <input className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} />
           </div>
           <div>
             <label className="text-sm text-gray-600">Lifting window (days)</label>
-            <select className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={liftingDays} onChange={(e) => setLiftingDays(e.target.value)}>
+            <select className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={liftingDays} onChange={(e) => setLiftingDays(e.target.value)}>
               <option value="21">21 days</option>
               <option value="30">30 days</option>
             </select>
           </div>
           <div>
             <label className="text-sm text-gray-600">Location</label>
-            <input className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Jejuri / Mumbai / Nagpur" />
+            <input className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Jejuri / Mumbai / Nagpur" />
           </div>
         </div>
         <div>
           <label className="text-sm text-gray-600">Notes</label>
-          <input className="w-full border border-gray-300 rounded-md px-2 py-2 mt-1" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <input className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-2.5 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-[#0f2942]/20 focus:border-[#0f2942]" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <button disabled={saving} className="w-full bg-gray-900 text-white rounded-md py-2 font-medium disabled:opacity-50">
+        <button disabled={saving} className="w-full bg-[#0f2942] text-white rounded-lg py-2.5 font-medium hover:bg-[#16385a] transition-colors disabled:opacity-50">
           {saving ? "Booking..." : "Book purchase sauda"}
         </button>
       </form>
@@ -215,6 +214,7 @@ export default function PurchasePage() {
           </table>
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
