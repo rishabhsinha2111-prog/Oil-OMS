@@ -109,7 +109,7 @@ export default function PurchasePage() {
         <a href="/dispatch-upload" className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-700 hover:bg-slate-50 transition-colors">
           Upload dispatch
         </a>
-        <a href="/indent" className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-700 hover:bg-slate-50 transition-colors">
+        <a href="/indent" target="_blank" rel="noopener noreferrer" className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-slate-700 hover:bg-slate-50 transition-colors">
           Indent sauda
         </a>
       </div>
